@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Messages</title>
+  <style>
+    * {
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Segoe UI',system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top left,#e0f2fe 0,#f9fafb 45%,#eef2ff 100%);
+      color:#0f172a;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    header {
+      background:linear-gradient(135deg,#06b6d4,#2563eb);
+      color:#fff;
+      padding:18px 16px;
+      text-align:center;
+      box-shadow:0 2px 10px rgba(15,23,42,0.25);
+    }
+
+    header h1 {
+      font-size:1.7rem;
+    }
+
+    header p {
+      margin-top:4px;
+      font-size:0.9rem;
+      opacity:0.9;
+    }
+
+    .container {
+      max-width:960px;
+      margin:20px auto 28px;
+      padding:0 16px;
+      flex:1;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .chat-box {
+      background:#ffffff;
+      border-radius:18px;
+      padding:16px 14px 14px;
+      box-shadow:0 12px 26px rgba(15,23,42,0.12);
+      display:flex;
+      flex-direction:column;
+      height:70vh;
+      border:1px solid rgba(148,163,184,0.35);
+    }
+
+    .chat-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:10px;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .chat-header-title {
+      font-size:1rem;
+      font-weight:600;
+      color:#0f172a;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .chat-header-title span.badge {
+      font-size:0.75rem;
+      background:#e0f2fe;
+      color:#0369a1;
+      padding:2px 8px;
+      border-radius:999px;
+    }
+
+    .chat-header-status {
+      font-size:0.78rem;
+      color:#6b7280;
+    }
+
+    .messages {
+      flex:1;
+      overflow-y:auto;
+      margin-bottom:12px;
+      padding-right:4px;
+    }
+
+    .messages::-webkit-scrollbar {
+      width:6px;
+    }
+    .messages::-webkit-scrollbar-track {
+      background:transparent;
+    }
+    .messages::-webkit-scrollbar-thumb {
+      background:#cbd5f5;
+      border-radius:999px;
+    }
+
+    .msg {
+      margin:8px 0;
+      padding:9px 12px 8px;
+      border-radius:14px;
+      max-width:80%;
+      position:relative;
+      animation:fadeIn .25s ease;
+      font-size:0.9rem;
+      word-wrap:break-word;
+    }
+
+    .msg.user {
+      background:linear-gradient(135deg,#06b6d4,#0284c7);
+      color:#f9fafb;
+      align-self:flex-end;
+      border-bottom-right-radius:4px;
+    }
+
+    .msg.mentor {
+      background:#e5e7eb;
+      color:#111827;
+      align-self:flex-start;
+      border-bottom-left-radius:4px;
+    }
+
+    .msg span.meta {
+      font-size:0.7rem;
+      color:rgba(15,23,42,0.75);
+      display:block;
+      margin-top:4px;
+    }
+
+    .msg.user span.meta {
+      color:rgba(239,246,255,0.9);
+    }
+
+    .msg button {
+      position:absolute;
+      top:4px;
+      right:6px;
+      background:transparent;
+      border:none;
+      color:inherit;
+      cursor:pointer;
+      font-size:0.8rem;
+      opacity:0.7;
+      padding:0;
+    }
+
+    .msg button:hover {
+      opacity:1;
+    }
+
+    .input-area {
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin-top:4px;
+      flex-wrap:wrap;
+    }
+
+    .input-area input[type="text"] {
+      flex:1;
+      min-width:160px;
+      padding:9px 10px;
+      border:1px solid #d1d5db;
+      border-radius:999px;
+      font-size:0.9rem;
+      background:#f9fafb;
+      transition:border-color 0.15s ease,box-shadow 0.15s ease;
+    }
+
+    .input-area input[type="text"]:focus {
+      outline:none;
+      border-color:#06b6d4;
+      box-shadow:0 0 0 2px rgba(56,189,248,0.25);
+      background:#ffffff;
+    }
+
+    .input-area select {
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid #d1d5db;
+      font-size:0.85rem;
+      background:#ffffff;
+      color:#374151;
+    }
+
+    .btn {
+      padding:9px 14px;
+      border:none;
+      border-radius:999px;
+      background:linear-gradient(135deg,#7c3aed,#4c1d95);
+      color:#fff;
+      cursor:pointer;
+      font-size:0.9rem;
+      font-weight:600;
+      transition:background 0.2s ease,transform 0.12s ease,box-shadow 0.12s ease;
+      box-shadow:0 10px 20px rgba(76,29,149,0.4);
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    .btn:hover {
+      background:linear-gradient(135deg,#6d28d9,#4338ca);
+      transform:translateY(-1px);
+      box-shadow:0 12px 22px rgba(76,29,149,0.45);
+    }
+
+    .btn:active {
+      transform:translateY(0);
+      box-shadow:0 8px 16px rgba(76,29,149,0.4);
+    }
+
+    footer {
+      text-align:center;
+      padding:12px 10px;
+      margin-top:auto;
+      background:#06b6d4;
+      color:#fff;
+      font-size:0.8rem;
+    }
+
+    @keyframes fadeIn {
+      from {opacity:0; transform:translateY(8px);}
+      to {opacity:1; transform:translateY(0);}
+    }
+
+    @media (max-width:600px) {
+      header h1 {font-size:1.5rem;}
+      header p {font-size:0.85rem;}
+      .chat-box {height:75vh; padding:14px 12px 12px;}
+      .msg {max-width:90%;}
+      .input-area {flex-direction:column; align-items:stretch;}
+      .btn {justify-content:center; width:100%;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>💬 Messages</h1>
+    <p>Chat with your mentor and peers</p>
+  </header>
+
+  <main class="container">
+    <section class="chat-box" aria-label="Messages chat box">
+      <div class="chat-header">
+        <div class="chat-header-title">
+          Conversation
+          <span class="badge">Intern · Mentor</span>
+        </div>
+        <div class="chat-header-status" id="chatStatus">
+          Messages are saved locally on this browser.
+        </div>
+      </div>
+
+      <div class="messages" id="messages"></div>
+
+      <div class="input-area">
+        <input
+          type="text"
+          id="msgInput"
+          placeholder="Type a message and press Enter..."
+        />
+        <select id="sender">
+          <option value="user">Intern</option>
+          <option value="mentor">Mentor</option>
+        </select>
+        <button class="btn" type="button" onclick="sendMessage()">
+          <span>Send</span> <span>📨</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Intern Grow Hub © 2025</p>
+  </footer>
+
+  <script>
+    const messagesEl = document.getElementById("messages");
+    let messages = JSON.parse(localStorage.getItem("messages")) || [];
+
+    function renderMessages() {
+      messagesEl.innerHTML = "";
+      messages.forEach((m, i) => {
+        const div = document.createElement("div");
+        div.className = "msg " + m.sender;
+        div.innerHTML = `
+          ${m.text}
+          <span class="meta">${m.sender === "user" ? "Intern" : "Mentor"} • ${m.time}</span>
+          <button title="Delete message" onclick="deleteMessage(${i})">✖</button>
+        `;
+        messagesEl.appendChild(div);
+      });
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      localStorage.setItem("messages", JSON.stringify(messages));
+    }
+
+    function sendMessage() {
+      const input = document.getElementById("msgInput");
+      const sender = document.getElementById("sender").value;
+      const text = input.value.trim();
+      if (!text) return;
+      const time = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      messages.push({text, sender, time});
+      input.value = "";
+      renderMessages();
+    }
+
+    function deleteMessage(index) {
+      messages.splice(index, 1);
+      renderMessages();
+    }
+
+    // Send with Enter key
+    document.getElementById("msgInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Initial render
+    renderMessages();
+  </script>
+</body>
+</html>

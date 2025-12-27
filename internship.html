@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <title>Intern Grow Hub</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #e0f2fe 0, #f9fafb 45%, #eef2ff 100%);
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: linear-gradient(180deg, #06b6d4, #0ea5e9);
+      color: #f9fafb;
+      padding: 18px 16px;
+      box-shadow: 2px 0 12px rgba(15, 23, 42, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sidebar h2 span {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.16em;
+      opacity: 0.9;
+    }
+
+    .sidebar nav {
+      margin-top: 8px;
+    }
+
+    .sidebar nav a {
+      display: block;
+      color: #eff6ff;
+      text-decoration: none;
+      margin: 6px 0;
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .sidebar nav a span.icon {
+      font-size: 1rem;
+    }
+
+    .sidebar nav a.active,
+    .sidebar nav a:hover {
+      background: rgba(15, 23, 42, 0.16);
+      transform: translateX(4px);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 0.7rem;
+      text-align: center;
+      color: #e0f2fe;
+      opacity: 0.9;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Sidebar toggle (mobile) */
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 20;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: none;
+      background: #06b6d4;
+      color: #f9fafb;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.35);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-toggle span.icon {
+      font-size: 1.1rem;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 18px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .topbar input {
+      flex: 1;
+      min-width: 180px;
+      padding: 8px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      background-color: #f9fafb;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .topbar input:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+      background-color: #ffffff;
+    }
+
+    /* User / profile in topbar */
+    .user {
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .user span.icon {
+      font-size: 1.3rem;
+    }
+
+    .user-name {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .user-name span.arrow {
+      font-size: 0.7rem;
+    }
+
+    .login-link-top {
+      font-size: 0.8rem;
+      margin-left: 8px;
+      color: #2563eb;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .login-link-top:hover {
+      color: #1d4ed8;
+    }
+
+    .profile-menu {
+      position: absolute;
+      top: 120%;
+      right: 0;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.25);
+      padding: 10px 0;
+      min-width: 170px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      display: none;
+      z-index: 30;
+    }
+
+    .profile-menu.open {
+      display: block;
+    }
+
+    .profile-menu-header {
+      padding: 8px 14px;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 0.85rem;
+      color: #4b5563;
+    }
+
+    .profile-menu-header strong {
+      display: block;
+      color: #0f172a;
+      font-size: 0.9rem;
+      margin-bottom: 2px;
+    }
+
+    .profile-menu a {
+      display: block;
+      padding: 8px 14px;
+      text-decoration: none;
+      font-size: 0.85rem;
+      color: #374151;
+      transition: background 0.15s ease;
+    }
+
+    .profile-menu a:hover {
+      background: #f3f4f6;
+    }
+
+    /* Widgets */
+    .widgets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .widget {
+      background: #ffffff;
+      padding: 14px 13px;
+      border-radius: 14px;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+    }
+
+    .widget:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+    }
+
+    .widget h3,
+    .widget h4 {
+      margin-bottom: 8px;
+      font-size: 1rem;
+      color: #0f172a;
+    }
+
+    .widget p {
+      font-size: 0.9rem;
+      color: #4b5563;
+    }
+
+    .welcome {
+      background: linear-gradient(135deg, #e0f2fe, #f5f3ff);
+      border: none;
+    }
+
+    .welcome h3 {
+      font-size: 1.1rem;
+    }
+
+    /* Progress Circle */
+    .progress {
+      text-align: center;
+    }
+
+    .circle-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 6px;
+    }
+
+    .circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: conic-gradient(#22c55e 75%, #e5e7eb 0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 600;
+      color: #0f172a;
+      position: relative;
+    }
+
+    .circle::after {
+      content: "";
+      position: absolute;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 0 0 1px rgba(209, 213, 219, 0.8);
+    }
+
+    .circle span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Lists */
+    .widget ul {
+      list-style: none;
+      margin-top: 4px;
+      font-size: 0.9rem;
+    }
+
+    .widget ul li {
+      margin: 4px 0;
+      padding: 5px 2px;
+      border-bottom: 1px dashed #e5e7eb;
+      color: #374151;
+    }
+
+    /* Buttons in widgets */
+    .widget button {
+      padding: 7px 11px;
+      background: linear-gradient(135deg, #7c3aed, #4c1d95);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.12s ease;
+      box-shadow: 0 10px 18px rgba(76, 29, 149, 0.35);
+    }
+
+    .widget button:hover {
+      background: linear-gradient(135deg, #6d28d9, #4338ca);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 22px rgba(76, 29, 149, 0.42);
+    }
+
+    .widget button:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 12px rgba(76, 29, 149, 0.4);
+    }
+
+    /* Feedback */
+    .widget blockquote {
+      font-style: italic;
+      color: #1f2937;
+      background: #f9fafb;
+      padding: 10px 12px;
+      border-left: 4px solid #7c3aed;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    /* Meetings */
+    .meetings p {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-bottom: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        height: 100%;
+        max-width: 260px;
+        transition: transform 0.2s ease;
+        transform: translateX(0);
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-toggle {
+        display: flex;
+      }
+
+      .main {
+        padding: 56px 12px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="sidebar-toggle" id="sidebarToggle">
+    <span class="icon">☰</span>
+    <span>Menu</span>
+  </button>
+
+  <div class="container">
+    <aside class="sidebar" id="sidebar">
+      <h2>
+        Intern Grow Hub
+        <span>Intern Dashboard</span>
+      </h2>
+      <nav>
+        <a href="dashboard.html" class="active">
+          <span class="icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="task.html">
+          <span class="icon">📝</span>
+          <span>My Tasks</span>
+        </a>
+        <a href="learning.html">
+          <span class="icon">📚</span>
+          <span>Learning</span>
+        </a>
+        <a href="feedback.html">
+          <span class="icon">💬</span>
+          <span>Feedback</span>
+        </a>
+        <a href="timelog.html">
+          <span class="icon">⏱️</span>
+          <span>Time Logs</span>
+        </a>
+        <a href="messages.html">
+          <span class="icon">📨</span>
+          <span>Messages</span>
+        </a>
+        <a href="certificate.html">
+          <span class="icon">🎓</span>
+          <span>Certificates</span>
+        </a>
+        <!-- Login link in sidebar -->
+        <a href="login.html">
+          <span class="icon">🔑</span>
+          <span>Login</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        © 2025 INTERN GROW HUB
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <input type="text" placeholder="Search tasks, meetings, or feedback..." id="searchBar" />
+
+        <!-- User block with profile dropdown + login link -->
+        <div class="user" id="userProfile">
+          <span class="icon">👤</span>
+          <div class="user-name">
+            <span>Intern</span>
+            <span class="arrow">▼</span>
+          </div>
+          <a href="login.html" class="login-link-top">Login</a>
+
+          <div class="profile-menu" id="profileMenu">
+            <div class="profile-menu-header">
+              <strong>Intern</strong>
+              intern@example.com
+            </div>
+            <a href="profile.html">View Profile</a>
+            <a href="settings.html">Account Settings</a>
+            <a href="login.html">Logout</a>
+          </div>
+        </div>
+      </header>
+
+      <section class="widgets">
+        <div class="widget welcome">
+          <h3 id="welcomeText">Welcome back, Intern 👋</h3>
+          <p>You're doing great. Keep learning, keep shipping, and keep growing.</p>
+        </div>
+
+        <div class="widget progress">
+          <h4>Internship Progress</h4>
+          <div class="circle-wrapper">
+            <div class="circle" id="progressCircle">
+              <span id="progressLabel">75%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="widget tasks">
+          <h4>Assigned Tasks</h4>
+          <ul id="taskList">
+            <li>✅ Complete onboarding</li>
+            <li>🕒 Submit weekly report</li>
+            <li>🔒 Final presentation prep</li>
+          </ul>
+          <button type="button" onclick="addTask()">➕ Add Task</button>
+        </div>
+
+        <div class="widget meetings">
+          <h4>Upcoming Meetings</h4>
+          <p id="meetingInfo">📅 Mentor Sync – Dec 20, 10:00 AM</p>
+          <button type="button" onclick="joinMeeting()">Join</button>
+        </div>
+
+        <div class="widget feedback">
+          <h4>Latest Feedback</h4>
+          <blockquote id="feedbackQuote">
+            "Great initiative on the last project!"
+          </blockquote>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Sidebar toggle (mobile)
+    const sidebar = document.getElementById("sidebar");
+    const toggleBtn = document.getElementById("sidebarToggle");
+
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+
+    // Dynamic greeting
+    const welcomeText = document.getElementById("welcomeText");
+    const hours = new Date().getHours();
+    if (hours < 12) welcomeText.textContent = "Good Morning, Intern 🌞";
+    else if (hours < 18) welcomeText.textContent = "Good Afternoon, Intern 🌤️";
+    else welcomeText.textContent = "Good Evening, Intern 🌙";
+
+    // Progress circle update
+    let progress = 75;
+    const progressCircle = document.getElementById("progressCircle");
+    const progressLabel = document.getElementById("progressLabel");
+
+    function setProgress(value) {
+      const clamped = Math.max(0, Math.min(100, value));
+      progressLabel.textContent = clamped + "%";
+      progressCircle.style.background =
+        `conic-gradient(#22c55e ${clamped}%, #e5e7eb 0)`;
+    }
+
+    function updateProgress() {
+      progress = (progress + 5) % 105;
+      setProgress(progress);
+    }
+
+    setProgress(progress);
+    setInterval(updateProgress, 5000);
+
+    // Add new task
+    function addTask() {
+      const task = prompt("Enter new task:");
+      if (task && task.trim()) {
+        const li = document.createElement("li");
+        li.textContent = "📝 " + task.trim();
+        document.getElementById("taskList").appendChild(li);
+      }
+    }
+
+    // Meeting join simulation
+    function joinMeeting() {
+      alert("Joining meeting... 🎥");
+      document.getElementById("meetingInfo").textContent =
+        "✅ You joined the meeting!";
+    }
+
+    // Feedback rotation
+    const feedbacks = [
+      '"Great initiative on the last project!"',
+      '"Excellent communication during team discussions."',
+      '"Keep improving your coding style for better readability."',
+      '"Fantastic presentation skills shown last week!"'
+    ];
+    let index = 0;
+    setInterval(() => {
+      index = (index + 1) % feedbacks.length;
+      document.getElementById("feedbackQuote").textContent =
+        feedbacks[index];
+    }, 4000);
+
+    // Profile dropdown toggle
+    const userProfile = document.getElementById("userProfile");
+    const profileMenu = document.getElementById("profileMenu");
+
+    userProfile.addEventListener("click", (e) => {
+      // prevent click on "Login" link from toggling menu
+      if (e.target.classList.contains("login-link-top")) return;
+      profileMenu.classList.toggle("open");
+    });
+
+    // Close dropdown on click outside
+    document.addEventListener("click", (e) => {
+      if (!userProfile.contains(e.target)) {
+        profileMenu.classList.remove("open");
+      }
+    });
+  </script>
+</body>
+</html>

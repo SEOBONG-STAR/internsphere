@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <title>Intern Profile • Intern Grow Hub</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 12px;
+      background:
+        radial-gradient(circle at top left, #22d3ee 0, transparent 55%),
+        radial-gradient(circle at bottom right, #6366f1 0, transparent 55%),
+        linear-gradient(135deg, #020617, #020617);
+      color: #e5e7eb;
+    }
+
+    .profile-shell {
+      width: 100%;
+      max-width: 640px;
+      position: relative;
+    }
+
+    .glow {
+      position: absolute;
+      inset: -2px;
+      border-radius: 20px;
+      background: conic-gradient(
+        from 210deg,
+        rgba(56,189,248,0.88),
+        rgba(129,140,248,0.96),
+        rgba(244,114,182,0.9),
+        rgba(56,189,248,0.88)
+      );
+      opacity: 0.9;
+      filter: blur(16px);
+      z-index: -1;
+    }
+
+    .card {
+      background: rgba(15,23,42,0.85);
+      border-radius: 20px;
+      padding: 22px 18px 18px;
+      box-shadow:
+        0 22px 55px rgba(15,23,42,0.9),
+        0 0 0 1px rgba(148,163,184,0.45);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(148,163,184,0.6);
+      display: grid;
+      grid-template-columns: 1.1fr 1.6fr;
+      gap: 18px;
+    }
+
+    /* Left: avatar & name */
+    .profile-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      border-right: 1px solid rgba(55,65,81,0.8);
+      padding-right: 10px;
+    }
+
+    .avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #facc15, #f97316);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #111827;
+      box-shadow:
+        0 10px 22px rgba(15,23,42,0.75),
+        0 0 0 2px rgba(15,23,42,0.9);
+    }
+
+    .profile-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f9fafb;
+      text-align: center;
+    }
+
+    .profile-role {
+      font-size: 0.88rem;
+      color: #a5b4fc;
+    }
+
+    .profile-badge {
+      margin-top: 4px;
+      font-size: 0.75rem;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: rgba(16,185,129,0.2);
+      color: #6ee7b7;
+      border: 1px solid rgba(16,185,129,0.5);
+    }
+
+    /* Right: details */
+    .profile-right {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .profile-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .profile-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .profile-sub {
+      font-size: 0.82rem;
+      color: #9ca3af;
+    }
+
+    .profile-fields {
+      margin-top: 4px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px dashed rgba(55,65,81,0.8);
+      padding-bottom: 4px;
+    }
+
+    .field-label {
+      color: #9ca3af;
+      font-size: 0.86rem;
+    }
+
+    .field-value {
+      color: #f9fafb;
+      text-align: right;
+      word-break: break-word;
+    }
+
+    .meta {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: #6b7280;
+    }
+
+    .btn-row {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 8px 13px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg,#22c55e,#16a34a);
+      color:#ecfdf5;
+      box-shadow:0 12px 26px rgba(22,163,74,0.7);
+    }
+
+    .btn-primary:hover {
+      background:linear-gradient(135deg,#4ade80,#22c55e);
+      transform:translateY(-1px);
+      box-shadow:0 14px 30px rgba(21,128,61,0.75);
+    }
+
+    .btn-secondary {
+      background:transparent;
+      color:#e5e7eb;
+      border:1px solid rgba(148,163,184,0.9);
+    }
+
+    .btn-secondary:hover {
+      background:rgba(15,23,42,0.9);
+      transform:translateY(-1px);
+      box-shadow:0 10px 22px rgba(15,23,42,0.85);
+    }
+
+    .status-badge {
+      font-size:0.75rem;
+      padding:2px 8px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.7);
+      color:#cbd5f5;
+    }
+
+    @media (max-width:600px) {
+      .card {
+        grid-template-columns: 1fr;
+        padding:18px 14px 16px;
+      }
+      .profile-left {
+        border-right:none;
+        border-bottom:1px solid rgba(55,65,81,0.8);
+        padding-right:0;
+        padding-bottom:10px;
+      }
+      .btn {
+        width:100%;
+        justify-content:center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="profile-shell">
+    <div class="glow"></div>
+
+    <section class="card" aria-label="Intern profile">
+      <div class="profile-left">
+        <div class="avatar" id="avatarInitials">
+          IG
+        </div>
+        <div class="profile-name" id="profileName">Intern</div>
+        <div class="profile-role" id="profileRole">Intern</div>
+        <div class="profile-badge">Active account</div>
+      </div>
+
+      <div class="profile-right">
+        <div class="profile-header">
+          <div>
+            <div class="profile-title">Account Overview</div>
+            <div class="profile-sub">These details are loaded from your dashboard account.</div>
+          </div>
+          <div class="status-badge">Local profile</div>
+        </div>
+
+        <div class="profile-fields">
+          <div class="field-row">
+            <span class="field-label">Full name</span>
+            <span class="field-value" id="fieldName">Intern</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Email</span>
+            <span class="field-value" id="fieldEmail">intern@example.com</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Role</span>
+            <span class="field-value" id="fieldRole">Intern</span>
+          </div>
+        </div>
+
+        <p class="meta">
+          Tip: Update your details in the dashboard “Account Details” card and refresh this page to see changes.
+        </p>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="goToDashboard()">
+            <span>Back to Dashboard</span> <span>📊</span>
+          </button>
+          <button class="btn btn-secondary" type="button" onclick="refreshProfile()">
+            <span>Refresh Profile</span> <span>🔄</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "internAccount";
+
+    function getInitials(name) {
+      if (!name) return "IG";
+      const parts = name.trim().split(" ").filter(Boolean);
+      if (parts.length === 1) return parts[0][0].toUpperCase();
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+
+    function loadProfile() {
+      let data = {
+        name: "Intern",
+        email: "intern@example.com",
+        role: "Intern",
+      };
+
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const stored = JSON.parse(raw);
+          data.name = stored.name || data.name;
+          data.email = stored.email || data.email;
+          data.role = stored.role || data.role;
+        }
+      } catch (e) {
+        console.error("Error reading account from localStorage:", e);
+      }
+
+      document.getElementById("profileName").textContent = data.name;
+      document.getElementById("profileRole").textContent = data.role;
+      document.getElementById("fieldName").textContent = data.name;
+      document.getElementById("fieldEmail").textContent = data.email;
+      document.getElementById("fieldRole").textContent = data.role;
+      document.getElementById("avatarInitials").textContent = getInitials(data.name);
+    }
+
+    function goToDashboard() {
+      window.location.href = "dashboard.html"; // change if your dashboard filename is different
+    }
+
+    function refreshProfile() {
+      loadProfile();
+    }
+
+    // Initial load
+    loadProfile();
+  </script>
+</body>
+</html>

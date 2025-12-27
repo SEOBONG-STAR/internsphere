@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1" />
+  <title>Internship Finder Login</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 12px;
+      color: #f9fafb;
+      background:
+        radial-gradient(circle at top left, #4f46e5 0, transparent 55%),
+        radial-gradient(circle at bottom right, #ec4899 0, transparent 55%),
+        linear-gradient(135deg, #0f172a, #020617);
+      background-attachment: fixed;
+    }
+
+    .login-shell {
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+    }
+
+    .glow {
+      position: absolute;
+      inset: -2px;
+      border-radius: 24px;
+      background: conic-gradient(
+        from 220deg,
+        rgba(129,140,248,0.9),
+        rgba(56,189,248,0.9),
+        rgba(244,114,182,0.9),
+        rgba(129,140,248,0.9)
+      );
+      opacity: 0.9;
+      filter: blur(18px);
+      z-index: -1;
+    }
+
+    .login-container {
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(18px);
+      padding: 26px 22px 22px;
+      border-radius: 24px;
+      box-shadow:
+        0 22px 55px rgba(15, 23, 42, 0.9),
+        0 0 0 1px rgba(148, 163, 184, 0.45);
+      width: 100%;
+      text-align: center;
+      animation: fadeIn 0.9s ease-out;
+    }
+
+    .login-title {
+      margin-bottom: 6px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      color: #a5b4fc;
+    }
+
+    .login-heading {
+      margin-bottom: 12px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #f9fafb;
+    }
+
+    .login-subtitle {
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+      color: #cbd5f5;
+    }
+
+    form {
+      margin-top: 4px;
+      text-align: left;
+    }
+
+    .input-box {
+      margin-bottom: 16px;
+    }
+
+    .input-box label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      font-size: 0.86rem;
+      color: #e5e7eb;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper span.icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.95rem;
+      color: #9ca3af;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 11px 13px 11px 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      outline: none;
+      font-size: 0.95rem;
+      background: rgba(15, 23, 42, 0.9);
+      color: #f9fafb;
+      transition: border-color 0.18s ease,
+                  box-shadow 0.18s ease,
+                  background-color 0.18s ease,
+                  transform 0.12s ease;
+    }
+
+    .input-box input::placeholder {
+      color: #9ca3af;
+    }
+
+    .input-box input:focus {
+      background: rgba(15, 23, 42, 1);
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 11px 0;
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: #ecfdf5;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.2s ease,
+                  transform 0.12s ease,
+                  box-shadow 0.12s ease;
+      box-shadow:
+        0 16px 34px rgba(22, 163, 74, 0.7),
+        0 0 0 1px rgba(34, 197, 94, 0.7);
+    }
+
+    .login-btn:hover {
+      background: linear-gradient(135deg, #4ade80, #22c55e);
+      transform: translateY(-2px);
+      box-shadow:
+        0 20px 38px rgba(21, 128, 61, 0.75),
+        0 0 0 1px rgba(22, 163, 74, 0.8);
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+      box-shadow:
+        0 10px 24px rgba(21, 128, 61, 0.7),
+        0 0 0 1px rgba(22, 163, 74, 0.7);
+    }
+
+    .footer-text {
+      margin-top: 16px;
+      font-size: 0.86rem;
+      color: #c4b5fd;
+    }
+
+    .footer-text a {
+      color: #fbbf24;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-text a:hover {
+      text-decoration: underline;
+    }
+
+    .hint-text {
+      margin-top: 4px;
+      font-size: 0.78rem;
+      color: #9ca3af;
+      text-align: left;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 22px 16px 18px;
+      }
+      .login-heading {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="login-shell">
+    <div class="glow"></div>
+
+    <section class="login-container" aria-label="Internship Finder Login">
+      <div class="login-title">Internship Finder</div>
+      <h2 class="login-heading">Welcome back</h2>
+      <p class="login-subtitle">Sign in to find and manage your internship opportunities.</p>
+
+      <form action="internship.html">
+        <div class="input-box">
+          <label for="email">Email</label>
+          <div class="input-wrapper">
+            <span class="icon">📧</span>
+            <input
+              type="email"
+              id="email"
+              placeholder="you@example.com"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="input-box">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <span class="icon">🔒</span>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <p class="hint-text">Use at least 8 characters for a strong password.</p>
+        </div>
+
+        <button class="login-btn" type="submit">
+          Log in
+        </button>
+      </form>
+
+      <p class="footer-text">
+        Don't have an account?
+        <a href="#">Sign up</a>
+      </p>
+    </section>
+  </main>
+</body>
+</html>
