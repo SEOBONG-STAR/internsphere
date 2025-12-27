@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0" />
+  <title>Internship Dashboard with Tasks</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #e0f2fe 0, #f9fafb 45%, #eef2ff 100%);
+      color: #0f172a;
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      background: linear-gradient(180deg, #06b6d4, #0ea5e9);
+      color: #f9fafb;
+      padding: 18px 16px;
+      box-shadow: 2px 0 12px rgba(15, 23, 42, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 6px;
+      text-align: center;
+      font-size: 1.25rem;
+      letter-spacing: 0.06em;
+    }
+
+    .sidebar small {
+      display: block;
+      text-align: center;
+      font-size: 0.75rem;
+      opacity: 0.9;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .sidebar nav {
+      margin-top: 10px;
+    }
+
+    .sidebar nav a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #eff6ff;
+      text-decoration: none;
+      margin: 6px 0;
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .sidebar nav a span.icon {
+      font-size: 1rem;
+    }
+
+    .sidebar nav a.active,
+    .sidebar nav a:hover {
+      background: rgba(15, 23, 42, 0.18);
+      transform: translateX(4px);
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.25);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 0.7rem;
+      text-align: center;
+      color: #e0f2fe;
+      opacity: 0.9;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Sidebar toggle (mobile) */
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 20;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: none;
+      background: #06b6d4;
+      color: #f9fafb;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.35);
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-toggle span.icon {
+      font-size: 1.1rem;
+    }
+
+    /* Main */
+    .main {
+      flex: 1;
+      padding: 18px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .topbar input {
+      flex: 1;
+      min-width: 180px;
+      padding: 8px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      background-color: #f9fafb;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .topbar input:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+      background-color: #ffffff;
+    }
+
+    .user {
+      font-weight: 600;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+    }
+
+    .user span.icon {
+      font-size: 1.3rem;
+    }
+
+    /* Widgets */
+    .widgets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .widget {
+      background: #ffffff;
+      padding: 14px 13px;
+      border-radius: 14px;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+
+    .widget:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.12);
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+
+    .widget h4 {
+      margin-bottom: 8px;
+      font-size: 1rem;
+      color: #0f172a;
+    }
+
+    .widget small {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      color: #6b7280;
+    }
+
+    /* Task list */
+    #taskList {
+      list-style: none;
+      padding: 0;
+      margin-top: 8px;
+      margin-bottom: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    #taskList::-webkit-scrollbar {
+      width: 6px;
+    }
+    #taskList::-webkit-scrollbar-thumb {
+      background: #cbd5f5;
+      border-radius: 999px;
+    }
+
+    #taskList li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 4px;
+      margin: 4px 0;
+      border-bottom: 1px dashed #e5e7eb;
+      font-size: 0.9rem;
+      gap: 8px;
+    }
+
+    #taskList li span.text {
+      flex: 1;
+      word-break: break-word;
+    }
+
+    #taskList li.completed span.text {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+
+    .task-actions {
+      display: flex;
+      align-items: center;
+    }
+
+    .task-input-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    #newTaskInput {
+      flex: 1;
+      min-width: 160px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 0.9rem;
+      background-color: #f9fafb;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    #newTaskInput:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(56,189,248,0.25);
+      background-color: #ffffff;
+    }
+
+    .btn {
+      padding: 7px 11px;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background 0.2s ease, transform 0.12s ease, box-shadow 0.12s ease;
+    }
+
+    .btn-add {
+      background: linear-gradient(135deg, #06b6d4, #0ea5e9);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(14, 165, 233, 0.45);
+    }
+
+    .btn-add:hover {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.5);
+    }
+
+    .btn-done {
+      background: #16a34a;
+      color: #fff;
+      margin-right: 4px;
+    }
+
+    .btn-done:hover {
+      background: #15803d;
+      transform: translateY(-1px);
+    }
+
+    .btn-del {
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .btn-del:hover {
+      background: #b91c1c;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        height: 100%;
+        max-width: 260px;
+        transition: transform 0.2s ease;
+        transform: translateX(0);
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .sidebar-toggle {
+        display: flex;
+      }
+
+      .main {
+        padding: 56px 12px 16px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .widget {
+        padding: 12px 11px;
+      }
+      .btn-add {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="sidebar-toggle" id="sidebarToggle">
+    <span class="icon">☰</span>
+    <span>Menu</span>
+  </button>
+
+  <div class="container">
+    <aside class="sidebar" id="sidebar">
+      <h2>Intern Grow Hub</h2>
+      <small>Intern Dashboard</small>
+      <nav>
+        <a href="#" class="active">
+          <span class="icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="#">
+          <span class="icon">📝</span>
+          <span>My Tasks</span>
+        </a>
+        <a href="#">
+          <span class="icon">📚</span>
+          <span>Learning</span>
+        </a>
+        <a href="#">
+          <span class="icon">💬</span>
+          <span>Feedback</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        © 2025 INTERN GROW HUB
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <input type="text" placeholder="Search tasks..." />
+        <div class="user">
+          <span class="icon">👤</span>
+          <span>Intern</span>
+        </div>
+      </header>
+
+      <section class="widgets">
+        <article class="widget tasks">
+          <h4>My Tasks</h4>
+          <small>Track, complete, and manage your daily internship tasks.</small>
+
+          <ul id="taskList"></ul>
+
+          <div class="task-input-row">
+            <input
+              type="text"
+              id="newTaskInput"
+              placeholder="Enter a new task and press Add..."
+            />
+            <button class="btn btn-add" type="button" onclick="addTask()">
+              ➕ Add Task
+            </button>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const toggleBtn = document.getElementById("sidebarToggle");
+    toggleBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("open");
+    });
+
+    const taskList = document.getElementById("taskList");
+    const newTaskInput = document.getElementById("newTaskInput");
+
+    // Load tasks from localStorage
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    function renderTasks() {
+      taskList.innerHTML = "";
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        if (task.completed) li.classList.add("completed");
+        li.innerHTML = `
+          <span class="text">${task.text}</span>
+          <div class="task-actions">
+            <button class="btn btn-done" onclick="toggleTask(${index})">✔</button>
+            <button class="btn btn-del" onclick="deleteTask(${index})">🗑</button>
+          </div>
+        `;
+        taskList.appendChild(li);
+      });
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const text = newTaskInput.value.trim();
+      if (text) {
+        tasks.push({ text, completed: false });
+        newTaskInput.value = "";
+        renderTasks();
+      }
+    }
+
+    function toggleTask(index) {
+      tasks[index].completed = !tasks[index].completed;
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      renderTasks();
+    }
+
+    newTaskInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addTask();
+      }
+    });
+
+    // Initial render
+    renderTasks();
+  </script>
+</body>
+</html>

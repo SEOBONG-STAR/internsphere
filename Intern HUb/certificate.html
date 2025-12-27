@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internship Certificate Generator</title>
+
+  <!-- Main Styles -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #e0f7ff 0, #f5f7fa 45%, #eef2ff 100%);
+      color: #111827;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(135deg, #06b6d4, #2563eb);
+      color: #f9fafb;
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.25);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.75rem;
+      letter-spacing: 0.03em;
+    }
+
+    header p {
+      font-size: 0.95rem;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 24px auto 32px;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr);
+      gap: 24px;
+    }
+
+    @media (max-width: 800px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 20px 18px 18px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .card h2 {
+      margin-bottom: 12px;
+      color: #0ea5e9;
+      font-size: 1.25rem;
+    }
+
+    .card p.helper {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 10px;
+    }
+
+    .field-group {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #f9fafb;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25);
+      background-color: #ffffff;
+    }
+
+    .btn {
+      margin-top: 10px;
+      padding: 9px 16px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #7c3aed, #4c1d95);
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 18px rgba(76, 29, 149, 0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(76, 29, 149, 0.45);
+      background: linear-gradient(135deg, #6d28d9, #4338ca);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 12px rgba(76, 29, 149, 0.4);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: #4b5563;
+      border: 1px solid #d1d5db;
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      background: #f3f4f6;
+      box-shadow: none;
+    }
+
+    .btn[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .certificate-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .certificate {
+      width: 100%;
+      max-width: 700px;
+      aspect-ratio: 4 / 3;
+      padding: 42px 40px 30px;
+      border-radius: 16px;
+      background: radial-gradient(circle at top left, #ecfeff 0, #ffffff 50%, #f9fafb 100%);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.18);
+      border: 10px solid transparent;
+      background-origin: padding-box;
+      background-clip: padding-box, border-box;
+      background-image:
+        radial-gradient(circle at top left, #ecfeff 0, #ffffff 40%, #eff6ff 100%),
+        linear-gradient(135deg, #06b6d4, #0ea5e9, #6366f1);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .certificate::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 12px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      pointer-events: none;
+    }
+
+    .certificate-header {
+      margin-bottom: 16px;
+    }
+
+    .logo-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      background: conic-gradient(from 180deg, #06b6d4, #0ea5e9, #6366f1, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f9fafb;
+      font-size: 1.3rem;
+      font-weight: 700;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.45);
+    }
+
+    .certificate h2 {
+      font-size: 1.9rem;
+      margin-bottom: 6px;
+      color: #4c1d95;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .certificate small {
+      font-size: 0.8rem;
+      color: #6b7280;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .certificate h3 {
+      font-size: 1.4rem;
+      margin: 14px 0 6px;
+      color: #111827;
+    }
+
+    .certificate p {
+      margin: 4px 0;
+      font-size: 0.98rem;
+      color: #4b5563;
+    }
+
+    .highlight-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 10px;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    .muted {
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .tagline {
+      margin-top: 10px;
+      font-size: 0.92rem;
+      color: #6b7280;
+    }
+
+    .signature {
+      margin-top: 36px;
+      display: flex;
+      justify-content: space-between;
+      padding: 0 40px;
+      gap: 32px;
+      font-size: 0.85rem;
+    }
+
+    .signature div {
+      text-align: center;
+      flex: 1;
+    }
+
+    .signature-line {
+      border: none;
+      border-bottom: 1px solid #9ca3af;
+      width: 70%;
+      margin: 0 auto 6px;
+    }
+
+    .signature span {
+      display: block;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .signature .role {
+      color: #6b7280;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .badge {
+      position: absolute;
+      right: 26px;
+      top: 26px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #047857;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .footer-actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-start;
+    }
+
+    footer {
+      text-align: center;
+      padding: 12px 10px;
+      margin-top: auto;
+      background: #06b6d4;
+      color: #f9fafb;
+      font-size: 0.8rem;
+    }
+
+    .subtext {
+      font-size: 0.78rem;
+      color: #93c5fd;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎓 Internship Certificate Generator</h1>
+    <p>Create, preview, and download a personalized certificate</p>
+  </header>
+
+  <main class="container">
+    <!-- Form Card -->
+    <section class="card" aria-labelledby="form-title">
+      <h2 id="form-title">Enter Details</h2>
+      <p class="helper">Fill all the fields and click Generate to preview your certificate.</p>
+
+      <form id="certificateForm" onsubmit="handleGenerate(event)" novalidate>
+        <div class="field-group">
+          <label for="internName">Intern Name</label>
+          <input
+            type="text"
+            id="internName"
+            name="internName"
+            placeholder="Your full name"
+            autocomplete="name"
+            required
+          />
+        </div>
+
+        <div class="field-group">
+          <label for="internshipTitle">Internship Title</label>
+          <input
+            type="text"
+            id="internshipTitle"
+            name="internshipTitle"
+            placeholder="e.g. Web Development Internship"
+            required
+          />
+        </div>
+
+        <div class="field-group">
+          <label for="completionDate">Completion Date</label>
+          <input
+            type="date"
+            id="completionDate"
+            name="completionDate"
+            required
+          />
+        </div>
+
+        <div class="field-group">
+          <label for="organizationName">Organization / Company</label>
+          <input
+            type="text"
+            id="organizationName"
+            name="organizationName"
+            placeholder="e.g. Intern Grow Hub"
+          />
+        </div>
+
+        <div class="footer-actions">
+          <button type="submit" class="btn">
+            <span>✨ Generate Certificate</span>
+          </button>
+          <button type="button" class="btn secondary" onclick="clearCertificate()">
+            Reset
+          </button>
+        </div>
+
+        <p class="subtext">
+          Your details are stored only in this browser using localStorage and can be cleared anytime.
+        </p>
+      </form>
+    </section>
+
+    <!-- Certificate Preview Card -->
+    <section class="card certificate-wrapper" aria-label="Certificate preview">
+      <div id="certificateArea" class="certificate" aria-live="polite">
+        <div class="badge">Verified Internship</div>
+
+        <div class="certificate-header">
+          <div class="logo-circle">
+            <span>IG</span>
+          </div>
+          <h2>Certificate of Completion</h2>
+          <small>Intern Grow Hub</small>
+        </div>
+
+        <p class="muted">This certifies that</p>
+        <div id="certName" class="highlight-name">Your Name</div>
+
+        <p>has successfully completed the</p>
+        <h3 id="certTitle">Internship Title</h3>
+
+        <p id="certOrg" class="muted">at Intern Grow Hub</p>
+
+        <p class="tagline">
+          demonstrating dedication, professionalism, and a commitment to continuous learning.
+        </p>
+
+        <p style="margin-top: 10px;">
+          Awarded on <span id="certDate">DD/MM/YYYY</span>
+        </p>
+
+        <div class="signature">
+          <div>
+            <hr class="signature-line" />
+            <span>Mentor</span>
+            <span class="role">Internship Supervisor</span>
+          </div>
+          <div>
+            <hr class="signature-line" />
+            <span>Employer</span>
+            <span class="role">Program Director</span>
+          </div>
+        </div>
+
+        <div class="footer-actions" style="justify-content:center; margin-top:18px;">
+          <button class="btn" type="button" id="downloadBtn" onclick="downloadCertificate()">
+            ⬇ Download PNG
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Intern Grow Hub © 2025 • Internship Certificate Generator</p>
+  </footer>
+
+  <!-- html2canvas library for download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"
+          integrity="sha512-BNa5zs8F6rZLxKQkdpDg0hGZQKDUxlZk9Eh2Z90GEUrJWq+F5hdB6k2NWxoJPVdd2G62W5iyi5hR0rVQx0L3jQ=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    const STORAGE_KEY = 'internGrowHubCertificate';
+
+    function formatDateToDisplay(value) {
+      if (!value) return 'DD/MM/YYYY';
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return 'DD/MM/YYYY';
+      return date.toLocaleDateString(undefined, {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+      });
+    }
+
+    function updatePreview({ name, title, date, organization }) {
+      document.getElementById('certName').textContent = name || 'Your Name';
+      document.getElementById('certTitle').textContent = title || 'Internship Title';
+      document.getElementById('certDate').textContent = formatDateToDisplay(date);
+
+      const orgElement = document.getElementById('certOrg');
+      const orgName = organization && organization.trim()
+        ? organization.trim()
+        : 'Intern Grow Hub';
+      orgElement.textContent = 'at ' + orgName;
+    }
+
+    function saveToStorage(data) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (err) {
+        console.error('Error saving certificate data:', err);
+      }
+    }
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (err) {
+        console.error('Error reading certificate data:', err);
+        return null;
+      }
+    }
+
+    function handleGenerate(event) {
+      event.preventDefault();
+
+      const nameInput = document.getElementById('internName');
+      const titleInput = document.getElementById('internshipTitle');
+      const dateInput = document.getElementById('completionDate');
+      const orgInput = document.getElementById('organizationName');
+
+      const name = nameInput.value.trim();
+      const title = titleInput.value.trim();
+      const date = dateInput.value;
+      const organization = orgInput.value.trim();
+
+      if (!name || !title || !date) {
+        alert('Please fill in Name, Title, and Completion Date.');
+        return;
+      }
+
+      const data = { name, title, date, organization };
+      updatePreview(data);
+      saveToStorage(data);
+    }
+
+    function clearCertificate() {
+      document.getElementById('certificateForm').reset();
+      const emptyData = { name: '', title: '', date: '', organization: '' };
+      updatePreview(emptyData);
+
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch (err) {
+        console.error('Error clearing storage:', err);
+      }
+    }
+
+    function downloadCertificate() {
+      const area = document.getElementById('certificateArea');
+      const downloadBtn = document.getElementById('downloadBtn');
+
+      downloadBtn.disabled = true;
+      downloadBtn.textContent = 'Generating...';
+
+      html2canvas(area, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null,
+      }).then((canvas) => {
+        const link = document.createElement('a');
+        link.download = 'internship-certificate.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      }).catch((err) => {
+        console.error('Error generating image:', err);
+        alert('Could not generate the certificate image. Please try again.');
+      }).finally(() => {
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = '⬇ Download PNG';
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const saved = loadFromStorage();
+      if (saved) {
+        updatePreview(saved);
+        const form = document.getElementById('certificateForm');
+        form.internName.value = saved.name || '';
+        form.internshipTitle.value = saved.title || '';
+        form.completionDate.value = saved.date || '';
+        form.organizationName.value = saved.organization || '';
+      } else {
+        updatePreview({ name: '', title: '', date: '', organization: '' });
+      }
+    });
+  </script>
+</body>
+</html>
